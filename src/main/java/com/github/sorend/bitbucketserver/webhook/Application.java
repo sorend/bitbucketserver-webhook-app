@@ -8,10 +8,12 @@ import io.helidon.health.HealthSupport;
 import io.helidon.health.checks.HealthChecks;
 import io.helidon.metrics.MetricsSupport;
 import io.helidon.webserver.Routing;
+import io.helidon.webserver.Service;
 import io.helidon.webserver.WebServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,9 +21,9 @@ public final class Application {
 
     private static Logger logger = LoggerFactory.getLogger(Application.class);
 
-    public static WebServer start(ApplicationConfiguration configuration, WebhookHandler webhookHandler) {
+    public static WebServer start(ApplicationConfiguration configuration, WebhookHandler webhookHandler, Service... additionalServices) {
 
-        Routing routing = createRouting(configuration, webhookHandler);
+        Routing routing = createRouting(configuration, webhookHandler, additionalServices);
 
         WebServer server = WebServer.create(configuration.getServerConfiguration(), routing);
 
@@ -39,7 +41,7 @@ public final class Application {
         return server;
     }
 
-    private static Routing createRouting(ApplicationConfiguration configuration, WebhookHandler webhookHandler) {
+    private static Routing createRouting(ApplicationConfiguration configuration, WebhookHandler webhookHandler, Service... additionalServices) {
 
         MetricsSupport metrics = MetricsSupport.create();
 
@@ -54,10 +56,14 @@ public final class Application {
 
         WebhookService webhookService = new WebhookService(webhookDispatcher);
 
-        return Routing.builder()
+        Routing.Builder rb = Routing.builder()
                 .register(health)                   // Health at "/health"
                 .register(metrics)                  // Metrics at "/metrics"
-                .register(configuration.getServerPath(), webhookService)
-                .build();
+                .register(configuration.getServerPath(), webhookService);
+
+        if (additionalServices != null)
+            Arrays.asList(additionalServices).forEach(rb::register);
+
+        return rb.build();
     }
 }
