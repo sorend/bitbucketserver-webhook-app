@@ -10,7 +10,7 @@ Can be pulled through Jitpack [![Release](https://jitpack.io/v/sorend/bitbuckets
 <dependency>
     <groupId>com.github.sorend</groupId>
     <artifactId>bitbucketserver-webhook-app</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7</version>
 </dependency>
 ```
 
