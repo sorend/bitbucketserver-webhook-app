@@ -30,20 +30,18 @@ public class WebhookService implements Service {
     private void processEventHandler(ServerRequest request, ServerResponse response) {
         String xEventKey = request.headers().value("X-Event-Key").orElse("invalid");
 
-        Map<String, List<String>> params = request.queryParams().toMap();
-
         if ("diagnostics:ping".equals(xEventKey)) {
             processPing(response);
         }
         else {
             request.content().as(String.class)
-                    .thenAccept(x -> processEvent(xEventKey, params, x, response)).exceptionally(ex -> processErrors(ex, request, response));
+                    .thenAccept(x -> processEvent(xEventKey, request, x, response)).exceptionally(ex -> processErrors(ex, request, response));
         }
     }
 
-    private void processEvent(String eventKey, Map<String, List<String>> params, String json, ServerResponse response) {
+    private void processEvent(String eventKey, ServerRequest serverRequest, String json, ServerResponse response) {
         try {
-            dispatcher.dispatch(eventKey, params, json);
+            dispatcher.dispatch(eventKey, serverRequest, json);
             response.status(200).send(eventKey + ": Received");
         } catch (Exception e) {
             LOGGER.warn("Error triggering inbound service", e);

@@ -4,18 +4,16 @@ import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.github.sorend.bitbucketserver.webhook.eventpayload.features.CommentAware;
 import com.github.sorend.bitbucketserver.webhook.eventpayload.features.PullRequestAware;
 import com.github.sorend.bitbucketserver.webhook.eventpayload.features.RepositoryAware;
-
-import java.util.List;
-import java.util.Map;
+import io.helidon.webserver.ServerRequest;
 
 public class ContextBuilder {
 
-    public static ContextBuilder create(BitbucketApi api, Map<String, List<String>> params) {
-        return new ContextBuilder(api, params);
+    public static ContextBuilder create(BitbucketApi api, ServerRequest request) {
+        return new ContextBuilder(api, request);
     }
 
     private BitbucketApi api;
-    private Map<String, List<String>> params;
+    private ServerRequest serverRequest;
     private String project;
     private String repo;
     private int pullRequestId;
@@ -23,9 +21,9 @@ public class ContextBuilder {
     private int commentId;
     private int commentVersion;
 
-    private ContextBuilder(BitbucketApi api, Map<String, List<String>> params) {
+    private ContextBuilder(BitbucketApi api, ServerRequest serverRequest) {
         this.api = api;
-        this.params = params;
+        this.serverRequest = serverRequest;
     }
 
     public ContextBuilder fromRepo(RepositoryAware r) {
@@ -49,15 +47,15 @@ public class ContextBuilder {
     }
 
     public RepoContext buildRepo() {
-        return new RepoContextImpl(api, params, project, repo);
+        return new RepoContextImpl(api, serverRequest, project, repo);
     }
 
     public PullRequestContext buildPR() {
-        return new PullRequestContextImpl(api, params, project, repo, pullRequestId, pullRequestVersion);
+        return new PullRequestContextImpl(api, serverRequest, project, repo, pullRequestId, pullRequestVersion);
     }
 
     public PullRequestCommentContext buildPRC() {
-        return new PullRequestCommentContextImpl(api, params, project, repo, pullRequestId, pullRequestVersion, commentId, commentVersion);
+        return new PullRequestCommentContextImpl(api, serverRequest, project, repo, pullRequestId, pullRequestVersion, commentId, commentVersion);
     }
 }
 

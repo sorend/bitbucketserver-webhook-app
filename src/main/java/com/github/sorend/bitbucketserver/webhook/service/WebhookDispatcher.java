@@ -5,6 +5,7 @@ import com.github.sorend.bitbucketserver.webhook.WebhookEvent;
 import com.github.sorend.bitbucketserver.webhook.WebhookHandler;
 import com.github.sorend.bitbucketserver.webhook.context.ContextBuilder;
 import com.github.sorend.bitbucketserver.webhook.eventpayload.EventPayloads;
+import io.helidon.webserver.ServerRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,13 +30,13 @@ public class WebhookDispatcher {
         this.wh = wh;
     }
 
-    public void dispatch(String eventKey, Map<String, List<String>> params, String json) {
-        executorService.submit(() -> dispatchInner(eventKey, params, json));
+    public void dispatch(String eventKey, ServerRequest serverRequest, String json) {
+        executorService.submit(() -> dispatchInner(eventKey, serverRequest, json));
     }
 
-    public void dispatchInner(String eventKey, Map<String, List<String>> params, String json) {
+    public void dispatchInner(String eventKey, ServerRequest serverRequest, String json) {
         try {
-            ContextBuilder cb = ContextBuilder.create(api, params);
+            ContextBuilder cb = ContextBuilder.create(api, serverRequest);
 
             if ("repo:refs_changed".equals(eventKey)) {
                 wh.onRepoRefsChanged(builder(json, epf::repoRefsChanged, x -> cb.fromRepo(x).buildRepo()));

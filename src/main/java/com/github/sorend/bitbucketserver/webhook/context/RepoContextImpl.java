@@ -1,6 +1,7 @@
 package com.github.sorend.bitbucketserver.webhook.context;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
+import io.helidon.webserver.ServerRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -8,13 +9,13 @@ import java.util.Map;
 public class RepoContextImpl implements RepoContext {
 
     private BitbucketApi bitbucketApi;
-    private Map<String, List<String>> params;
+    private ServerRequest serverRequest;
     private String project;
     private String repo;
 
-    public RepoContextImpl(BitbucketApi bitbucketApi, Map<String, List<String>> params, String project, String repo) {
+    public RepoContextImpl(BitbucketApi bitbucketApi, ServerRequest serverRequest, String project, String repo) {
         this.bitbucketApi = bitbucketApi;
-        this.params = params;
+        this.serverRequest = serverRequest;
         this.project = project;
         this.repo = repo;
     }
@@ -23,8 +24,10 @@ public class RepoContextImpl implements RepoContext {
         return bitbucketApi;
     }
 
+    public ServerRequest request() { return serverRequest; }
+
     public Map<String, List<String>> params() {
-        return params;
+        return serverRequest.queryParams().toMap();
     }
 
     @Override
