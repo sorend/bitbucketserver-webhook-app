@@ -25,7 +25,10 @@ public final class Application {
 
         Routing routing = createRouting(configuration, webhookHandler, additionalServices);
 
-        WebServer server = WebServer.create(configuration.getServerConfiguration(), routing);
+        WebServer server = WebServer.builder()
+                .config(configuration.getServerConfiguration())
+                .routing(routing)
+                .build();
 
         // start server
         server.start()
