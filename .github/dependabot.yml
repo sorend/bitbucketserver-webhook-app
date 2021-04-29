@@ -1,0 +1,12 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "23:30"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: net.bytebuddy:byte-buddy
+    versions:
+    - 1.10.20
