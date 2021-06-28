@@ -14,7 +14,7 @@ tasks.withType(JavaCompile) {
 }
 
 ext {
-    helidonversion = '2.3.0'
+    helidonversion = '2.3.1'
 }
 
 repositories {
