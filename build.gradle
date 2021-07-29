@@ -36,7 +36,7 @@ dependencies {
 
     testImplementation group: 'org.spockframework', name: 'spock-core', version: '2.0-groovy-3.0'
     testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.8'
-    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.31'
+    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.32'
 }
 
 wrapper {
