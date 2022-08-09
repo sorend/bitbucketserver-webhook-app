@@ -12,7 +12,7 @@ class ApplicationTest extends Specification {
     def "when called start then start"() {
         given:
         Config config = Config.create()
-        ServerConfiguration serverConfiguration = ServerConfiguration.create(config.get("server"))
+        Config serverConfiguration = ServerConfiguration.create(config.get("server"))
         BitbucketApi api = Mock()
         ApplicationConfiguration configuration = new ApplicationConfiguration(serverConfiguration, "/hello", api)
         WebhookHandler handler = Mock()

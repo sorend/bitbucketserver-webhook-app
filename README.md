@@ -1,6 +1,6 @@
 # bitbucket server webhook app
 
-A Helidon based microservice for handling webhook requests from Bitbucket Server.
+A Helidon 3.x based microservice for handling webhook requests from Bitbucket Server.
 
 ## Download
 
@@ -10,7 +10,7 @@ Can be pulled through Jitpack [![Release](https://jitpack.io/v/sorend/bitbuckets
 <dependency>
     <groupId>com.github.sorend</groupId>
     <artifactId>bitbucketserver-webhook-app</artifactId>
-    <version>0.0.9</version>
+    <version>3.0.0-1</version>
 </dependency>
 ```
 

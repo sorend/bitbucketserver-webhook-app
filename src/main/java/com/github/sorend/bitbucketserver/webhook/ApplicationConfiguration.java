@@ -1,22 +1,22 @@
 package com.github.sorend.bitbucketserver.webhook;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
-import io.helidon.webserver.ServerConfiguration;
+import io.helidon.config.Config;
 
 public class ApplicationConfiguration {
 
-    private ServerConfiguration serverConfiguration;
+    private Config serverConfiguration;
     private String serverPath;
 
     private BitbucketApi bitbucketApi;
 
-    public ApplicationConfiguration(ServerConfiguration serverConfiguration, String serverPath, BitbucketApi bitbucketApi) {
+    public ApplicationConfiguration(Config serverConfiguration, String serverPath, BitbucketApi bitbucketApi) {
         this.serverConfiguration = serverConfiguration;
         this.serverPath = serverPath;
         this.bitbucketApi = bitbucketApi;
     }
 
-    public ServerConfiguration getServerConfiguration() {
+    public Config getServerConfiguration() {
         return serverConfiguration;
     }
 

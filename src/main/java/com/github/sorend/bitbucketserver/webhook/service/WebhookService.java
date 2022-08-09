@@ -1,16 +1,14 @@
 package com.github.sorend.bitbucketserver.webhook.service;
 
+import com.github.sorend.bitbucketserver.webhook.WebhookDispatcher;
 import io.helidon.common.http.Http;
 import io.helidon.webserver.Routing;
 import io.helidon.webserver.ServerRequest;
 import io.helidon.webserver.ServerResponse;
 import io.helidon.webserver.Service;
+import jakarta.json.JsonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.json.JsonException;
-import java.util.List;
-import java.util.Map;
 
 public class WebhookService implements Service {
 
@@ -28,20 +26,20 @@ public class WebhookService implements Service {
     }
 
     private void processEventHandler(ServerRequest request, ServerResponse response) {
-        String xEventKey = request.headers().value("X-Event-Key").orElse("invalid");
+        var xEventKey = request.headers().value("X-Event-Key").orElse("invalid");
 
         if ("diagnostics:ping".equals(xEventKey)) {
             processPing(response);
         }
         else {
             request.content().as(String.class)
-                    .thenAccept(x -> processEvent(xEventKey, request, x, response)).exceptionally(ex -> processErrors(ex, request, response));
+                    .thenAccept(x -> processEvent(xEventKey, x, response)).exceptionally(ex -> processErrors(ex, request, response));
         }
     }
 
-    private void processEvent(String eventKey, ServerRequest serverRequest, String json, ServerResponse response) {
+    private void processEvent(String eventKey, String json, ServerResponse response) {
         try {
-            dispatcher.dispatch(eventKey, serverRequest, json);
+            dispatcher.dispatch(eventKey, json);
             response.status(200).send(eventKey + ": Received");
         } catch (Exception e) {
             LOGGER.warn("Error triggering inbound service", e);

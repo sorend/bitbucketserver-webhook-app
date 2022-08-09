@@ -1,9 +1,8 @@
 package com.github.sorend.bitbucketserver.webhook;
 
-import com.github.sorend.bitbucketserver.webhook.service.WebhookDispatcher;
-import com.github.sorend.bitbucketserver.webhook.service.WebhookService;
 import com.github.sorend.bitbucketserver.webhook.eventpayload.EventPayloads;
 import com.github.sorend.bitbucketserver.webhook.eventpayload.helper.GsonHelper;
+import com.github.sorend.bitbucketserver.webhook.service.WebhookService;
 import io.helidon.health.HealthSupport;
 import io.helidon.health.checks.HealthChecks;
 import io.helidon.metrics.MetricsSupport;
@@ -23,11 +22,11 @@ public final class Application {
 
     public static WebServer start(ApplicationConfiguration configuration, WebhookHandler webhookHandler, Service... additionalServices) {
 
-        Routing routing = createRouting(configuration, webhookHandler, additionalServices);
+        var routing = createRouting(configuration, webhookHandler, additionalServices);
 
-        WebServer server = WebServer.builder()
+        var server = WebServer.builder()
                 .config(configuration.getServerConfiguration())
-                .routing(routing)
+                .addRouting(routing)
                 .build();
 
         // start server
@@ -46,20 +45,20 @@ public final class Application {
 
     private static Routing createRouting(ApplicationConfiguration configuration, WebhookHandler webhookHandler, Service... additionalServices) {
 
-        MetricsSupport metrics = MetricsSupport.create();
+        var metrics = MetricsSupport.create();
 
-        HealthSupport health = HealthSupport.builder()
+        var health = HealthSupport.builder()
                 .addLiveness(HealthChecks.healthChecks())   // Adds a convenient set of checks
                 .build();
 
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        EventPayloads eventPayloads = new EventPayloads(GsonHelper.configure());
+        var executorService = Executors.newSingleThreadExecutor();
+        var eventPayloads = new EventPayloads(GsonHelper.configure());
 
-        WebhookDispatcher webhookDispatcher = new WebhookDispatcher(configuration.getBitbucketApi(), eventPayloads, executorService, webhookHandler);
+        var webhookDispatcher = new WebhookDispatcher(configuration.getBitbucketApi(), eventPayloads, executorService, webhookHandler);
 
-        WebhookService webhookService = new WebhookService(webhookDispatcher);
+        var webhookService = new WebhookService(webhookDispatcher);
 
-        Routing.Builder rb = Routing.builder()
+        var rb = Routing.builder()
                 .register(health)                   // Health at "/health"
                 .register(metrics)                  // Metrics at "/metrics"
                 .register(configuration.getServerPath(), webhookService);
