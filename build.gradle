@@ -40,7 +40,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.36'
     testImplementation group: 'org.spockframework', name: 'spock-core', version: '2.1-groovy-3.0'
     testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.13'
-    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
+    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36'
 }
 
 wrapper {
